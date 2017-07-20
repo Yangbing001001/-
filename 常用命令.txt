@@ -1,0 +1,128 @@
+ mysql -hlocalhost -uroot -p  //MYSQL进入sql控制台
+ show tables   查找某个数据库下面的表
+
+
+Linux指令
+
+sudo su -  q切换到超级管理员
+
+touch xxx.txt创建一个文本文档
+
+rm -r xxx删除某一文件或者文件夹
+
+ps ef |grep rms  查看含有rms的进程
+
+grep命令使用简单实例
+$ grep ‘test’ d*
+显示所有以d开头的文件中包含 test的行。
+$ grep ‘test’ aa bb cc
+显示在aa，bb，cc文件中匹配test的行。
+$ grep ‘[a-z]\{5\}’ aa
+显示所有包含每个字符串至少有5个连续小写字符的字符串的行。
+$ grep ‘w\(es\)t.*\1′ aa
+如果west被匹配，则es就被存储到内存中，并标记为1，然后搜索任意个字符(.*)，这些字符后面紧跟着 另外一个es(\1)，
+找到就显示该行。如果用egrep或grep -E，就不用”\”号进行转义，直接写成’w(es)t.*\1′就可以了。
+
+tail -f xxxx 跟踪xxx日志
+ctrl+C 退出
+mkdir xx  创建xx文件夹
+
+
+VI常用指令
+
+vi   xx.txt  编辑或创建xx.txt
+i,a,o进入编辑
+esc进入命令行
+yy复制当前行
+p粘贴
+
+ZZ 退出并保存
+
+
+   <!--写入数据库日志记录-->
+   <logger name="com.cmiot.rms.common.logback" level="INFO" additivity="false">
+        <appender-ref ref="db-classic-mysql-pool"/>
+  </logger>
+
+MVN  命令行打包
+mvn clean install  -Dmaven.test.skip=ture
+ 
+zookeeper 重启指令：
+sudo ./zkServer.sh restart
+
+http://172.19.10.8:3005/江苏前端展示
+http://172.19.10.5:7072/Dubbo服务
+
+http://172.19.10.7:7072/贵州Dubbo服务
+http://172.19.10.8:3007/重庆前端展示
+
+http://183.230.40.192:18080/江苏测试前端
+
+可以实时的得到新追加到文件中的信息，常用来跟踪日志文件tail -f RunLog
+
+
+mavren导入的包
+
+C:\Users\yangbing\.m2\repository\log4j  maven本地仓库
+
+
+ACS 日志查看
+
+用户名：app 密码：app_!QAZxsw2
+IP: 172.19.10.5
+文件目录：/home/app/acs
+
+
+测试的网关SN
+
+HWTC13DA1575  
+
+HWTCFD38BF71
+
+00410700741E2610000088947EF3AFD4   烽火HG261GU
+
+
+查网关对应的固件版本信息
+SELECT
+	a.gateway_uuid,
+	a.gateway_serialnumber,
+	a.gateway_macaddress,
+	b.id firmware_uuid,
+	b.firmware_name,
+	b.firmware_version,
+	b.firmware_path
+FROM
+	t_gateway_info a
+INNER JOIN t_firmware_info b ON a.gateway_firmware_uuid = b.id
+WHERE
+	a.gateway_serialnumber IN (
+		'HWTCFD38BF71',
+		'HWTC13DA1575',
+		'ALCLF2492E3F',
+		'ALCLF2492E3B',
+		'ZTEGC7EE09E2',
+		'ZTEGC7E1F40B',
+		'46485454B0FFF7A6'
+	);
+
+
+
+ZTEGC7E1F40B   F623
+
+EthernetBytesReceived
+
+HG261GU网关的账号和密码
+账号：CMCCAdmin
+密码：CMCCAdmins2npNv0E
+
+
+/opt/fs/webapps/ROOT/upload/2016/04/27/11
+
+慢日志查询
+show variables like '%quer%';
+
+
+
+
+
+
