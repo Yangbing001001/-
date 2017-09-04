@@ -1,8 +1,87 @@
  mysql -hlocalhost -uroot -p  //MYSQL进入sql控制台
  show tables   查找某个数据库下面的表
+MySql常用命令总结
+
+1:使用SHOW语句找出在服务器上当前存在什么数据库：
+mysql> SHOW DATABASES;
+2:2、创建一个数据库MYSQLDATA
+mysql> CREATE DATABASE MYSQLDATA;
+3:选择你所创建的数据库
+mysql> USE MYSQLDATA; (按回车键出现Database changed 时说明操作成功！)
+4:查看现在的数据库中存在什么表
+mysql> SHOW TABLES;
+5:创建一个数据库表
+mysql> CREATE TABLE MYTABLE (name VARCHAR(20), sex CHAR(1));
+6:显示表的结构：
+mysql> DESCRIBE MYTABLE;
+7:往表中加入记录
+mysql> insert into MYTABLE values (”hyq”,”M”);
+8:用文本方式将数据装入数据库表中（例如D:/mysql.txt）
+mysql> LOAD DATA LOCAL INFILE “D:/mysql.txt” INTO TABLE MYTABLE;
+9:导入.sql文件命令（例如D:/mysql.sql）
+mysql>use database;
+mysql>source d:/mysql.sql;
+10:删除表
+mysql>drop TABLE MYTABLE;
+11:清空表
+mysql>delete from MYTABLE;
+12:更新表中数据
+mysql>update MYTABLE set sex=”f” where name=’hyq’;
+
+以下是无意中在网络看到的使用MySql的管理心得,
+在windows中MySql以服务形式存在，在使用前应确保此服务已经启动，未启动可用net start mysql命令启动。而Linux中启动时可用“/etc/rc.d/init.d/mysqld start”命令，注意启动者应具有管理员权限。
+刚安装好的MySql包含一个含空密码的root帐户和一个匿名帐户，这是很大的安全隐患，对于一些重要的应用我们应将安全性尽可能提高，在这里应把匿名帐户删除、 root帐户设置密码，可用如下命令进行：
+use mysql;
+delete from User where User=”";
+update User set Password=PASSWORD(’newpassword’) where User=’root’;
+如果要对用户所用的登录终端进行限制，可以更新User表中相应用户的Host字段，在进行了以上更改后应重新启动数据库服务，此时登录时可用如下类似命令：
+mysql -uroot -p;
+mysql -uroot -pnewpassword;
+mysql mydb -uroot -p;
+mysql mydb -uroot -pnewpassword;
+上面命令参数是常用参数的一部分，详细情况可参考文档。此处的mydb是要登录的数据库的名称。
+在 进行开发和实际应用中，用户不应该只用root用户进行连接数据库，虽然使用root用户进行测试时很方便，但会给系统带来重大安全隐患，也不利于管理技 术的提高。我们给一个应用中使用的用户赋予最恰当的数据库权限。如一个只进行数据插入的用户不应赋予其删除数据的权限。MySql的用户管理是通过 User表来实现的，添加新用户常用的方法有两个，一是在User表插入相应的数据行，同时设置相应的权限；二是通过GRANT命令创建具有某种权限的用 户。其中GRANT的常用用法如下：
+grant all on mydb.* to NewUserName@HostName identified by “password” ;
+grant usage on *.* to NewUserName@HostName identified by “password”;
+grant select,insert,update on mydb.* to NewUserName@HostName identified by “password”;
+grant update,delete on mydb.TestTable to NewUserName@HostName identified by “password”;
+若 要给此用户赋予他在相应对象上的权限的管理能力，可在GRANT后面添加WITH GRANT OPTION选项。而对于用插入User表添加的用户，Password字段应用PASSWORD 函数进行更新加密，以防不轨之人窃看密码。对于那些已经不用的用户应给予清除，权限过界的用户应及时回收权限，回收权限可以通过更新User表相应字段， 也可以使用REVOKE操作。
+下面给出本人从其它资料(www.cn-java.com)获得的对常用权限的解释：
+全局管理权限：
+FILE: 在MySQL服务器上读写文件。
+PROCESS: 显示或杀死属于其它用户的服务线程。
+RELOAD: 重载访问控制表，刷新日志等。
+SHUTDOWN: 关闭MySQL服务。
+数据库/数据表/数据列权限：
+ALTER: 修改已存在的数据表(例如增加/删除列)和索引。
+CREATE: 建立新的数据库或数据表。
+DELETE: 删除表的记录。
+DROP: 删除数据表或数据库。
+INDEX: 建立或删除索引。
+INSERT: 增加表的记录。
+SELECT: 显示/搜索表的记录。
+UPDATE: 修改表中已存在的记录。
+特别的权限：
+ALL: 允许做任何事(和root一样)。
+USAGE: 只允许登录–其它什么也不允许做。
+
+
+
+jar xvf fileserver.war war包 解压打包
+
+
+service mysql start  Linux重启数据库
+ mysql -hlocalhost -uroot -p  //MYSQL进入sql控制台
+ show tables   查找某个数据库下面的表
+
+tcapi show Account  获取网关的账号和密码
+
+
 
 
 Linux指令
+
+chmod 777 file   修改文件的属性R 4 W 2 X 1 
 
 sudo su -  q切换到超级管理员
 
@@ -13,20 +92,15 @@ rm -r xxx删除某一文件或者文件夹
 ps ef |grep rms  查看含有rms的进程
 
 grep命令使用简单实例
-$ grep ‘test’ d*
-显示所有以d开头的文件中包含 test的行。
-$ grep ‘test’ aa bb cc
-显示在aa，bb，cc文件中匹配test的行。
-$ grep ‘[a-z]\{5\}’ aa
-显示所有包含每个字符串至少有5个连续小写字符的字符串的行。
-$ grep ‘w\(es\)t.*\1′ aa
-如果west被匹配，则es就被存储到内存中，并标记为1，然后搜索任意个字符(.*)，这些字符后面紧跟着 另外一个es(\1)，
-找到就显示该行。如果用egrep或grep -E，就不用”\”号进行转义，直接写成’w(es)t.*\1′就可以了。
-
+grep -A 20 'start invoke standard newInstallation,parameter:' rms-info-30dt.log  查看相关日志的相关内容的后20行
+grep -B 20 'start invoke standard newInstallation,parameter:' rms-info-30dt.log  查看相关日志的相关内容的前20行
+grep -C 20 'start invoke standard newInstallation,parameter:' rms-info-30dt.log  查看相关日志的相关内容的前后20行
 tail -f xxxx 跟踪xxx日志
 ctrl+C 退出
 mkdir xx  创建xx文件夹
-ps ef | grep Mycat  查看Mycat进程参数
+cp aa.txt aa.bak 备份aa.txt
+mv aa.bak aa.txt  还原备份文件
+
 
 VI常用指令
 
@@ -106,14 +180,84 @@ WHERE
 	);
 
 
+Eclipse常用快捷键
 
-ZTEGC7E1F40B   F623
+1、alt+? 或 alt+/：自动补全代码或者提示代码
 
-EthernetBytesReceived
+2、ctrl+o：快速 outline 视图
 
-HG261GU网关的账号和密码
-账号：CMCCAdmin
-密码：CMCCAdmins2npNv0E
+3、ctrl+shift+r：打开资源列表
+
+4、ctrl+shift+f：格式化代码
+
+5、ctrl+e：快速转换编辑器
+
+6、ctrl+page down 或 ctrl+page up： 选项卡之间快速切换
+
+7、shift+enter 及 ctrl+shift+enter： 在当前行上或者下边创建空白
+
+8、Alt+ 方向键上下：上下行交换内容或把当前行内容把上或下移动
+
+9、Control+Alt+ 方向上下键：复制高亮显示的一行或多行
+
+10、ctrl+m：当前编辑页面窗口最大化
+
+11、ctrl+/：自动注释当前行或者选择的多行
+
+12、ctrl+shift+/：自动注释掉选择的代码块
+
+13、ctrl+d：删除当前行
+
+14、ctrl+shift+x 和 ctrl+shift+y：英文字母大小写的转换
+
+15、ctrl+shift+o：自动引入包和删除无用包
+
+
+
+
+Ctrl+1 快速修复(最经典的快捷键, 就不用多说了)
+Ctrl+D: 删除当前行
+Ctrl+Alt+↓ 复制当前行到下一行(复制增加)
+Ctrl+Alt+↑ 复制当前行到上一行(复制增加)
+Alt+↓ 当前行和下面一行交互位置(特别实用, 可以省去先剪切, 再粘贴了)
+Alt+↑ 当前行和上面一行交互位置(同上)
+Alt+← 前一个编辑的页面
+Alt+→ 下一个编辑的页面(当然是针对上面那条来说了)
+Alt+Enter 显示当前选择资源(工程,or 文件 or 文件)的属性
+Shift+Enter 在当前行的下一行插入空行(这时鼠标可以在当前行的任一位置, 不一定是最后)
+Shift+Ctrl+Enter 在当前行插入空行(原理同上条)
+Ctrl+Q 定位到最后编辑的地方
+Ctrl+L 定位在某行 (对于程序超过 100 的人就有福音了)
+Ctrl+M 最大化当前的 Edit 或 View (再按则反之)
+Ctrl+/ 注释当前行, 再按则取消注释
+Ctrl+O 快速显示 OutLine
+Ctrl+T 快速显示当前类的继承结构
+Ctrl+W 关闭当前 Editer
+Ctrl+K 参照选中的 Word 快速定位到下一个
+Ctrl+E 快速显示当前 Editer 的下拉列表(如果当前页面没有显示的用黑体表示)
+Ctrl+/(小键盘) 折叠当前类中的所有代码
+Ctrl+×(小键盘) 展开当前类中的所有代码
+Ctrl+Space 代码助手完成一些代码的插入(但一般和输入法有冲突, 可以修改输入法的热键, 也可以暂用 Alt+/ 来代替)
+Ctrl+Shift+E 显示管理当前打开的所有的 View 的管理器(可以选择关闭, 激活等操作)
+Ctrl+J 正向增量查找(按下 Ctrl+J 后, 你所输入的每个字母编辑器都提供快速匹配定位到某个单词, 如果没有, 则在 stutes line 中显示没有找到了, 查一个单词时, 特别实用, 这个功能 Idea 两年前就有了)
+Ctrl+Shift+J 反向增量查找(和上条相同, 只不过是从后往前查)
+Ctrl+Shift+F4 关闭所有打开的 Editer
+Ctrl+Shift+X 把当前选中的文本全部变味小写
+Ctrl+Shift+Y 把当前选中的文本全部变为小写
+Ctrl+Shift+F 格式化当前代码
+Ctrl+Shift+P 定位到对于的匹配符(譬如{}) (从前面定位后面时, 光标要在匹配符里面, 后面到前面, 则反之)
+下面的快捷键是重构里面常用的, 本人就自己喜欢且常用的整理一下(注:一般重构的快捷键都是 Alt+Shift 开头的了)
+Alt+Shift+R 重命名 (是我自己最爱用的一个了, 尤其是变量和类的 Rename, 比手工方法能节省很多劳动力)
+Alt+Shift+M 抽取方法 (这是重构里面最常用的方法之一了, 尤其是对一大堆泥团代码有用)
+Alt+Shift+C 修改函数结构(比较实用, 有 N 个函数调用了这个方法, 修改一次搞定)
+Alt+Shift+L 抽取本地变量( 可以直接把一些魔法数字和字符串抽取成一个变量, 尤其是多处调用的时候)
+Alt+Shift+F 把 Class 中的 local 变量变为 field 变量 (比较实用的功能)
+Alt+Shift+I 合并变量(可能这样说有点不妥 Inline)
+Alt+Shift+V 移动函数和变量(不怎么常用)
+Alt+Shift+Z 重构的后悔药(Undo)
+
+
+
 
 
 /opt/fs/webapps/ROOT/upload/2016/04/27/11
